@@ -38,20 +38,14 @@ struct Result {
 };
 
 //Operator to compare Gps struct
-bool operator<(const Gps& l, const Gps& r) {
+bool operator<(const Gps &l, const Gps &r) {
 	return ((l.Latitude != r.Latitude) && (l.Longitude != r.Longitude));
 }
 
-struct sortclass {
-	bool operator() (Gps g, Gps h) {
-		return (g.Latitude < h.Latitude);
-  	}
-} sortobject;
-
 ///Read vehicle dat from file and create a map with it containing the co-ordinates as the key
 ///and PositionId, Registration and TimeStamp as value
-vector<pair<Gps, VehData>> ReadVehData(FILE *infile) {
-	vector<pair<Gps, VehData>> vehData{};
+map<Gps, VehData> ReadVehData(FILE *infile) {
+	map<Gps, VehData> vehData{};
 
 	while (!feof(infile)) {
 		VehData veh;
@@ -82,12 +76,12 @@ vector<pair<Gps, VehData>> ReadVehData(FILE *infile) {
 			fread(&i, 1, 1, infile);
 			veh.TimeStamp |= (i << x);
 		}
-		vehData.push_back({gps,veh});
+		vehData.insert({gps,veh});
 	}
 	return vehData;
 }
 
-bool compare(pair<Gps, VehData>& a, pair<Gps, VehData>& b) {
+bool compare(pair<Gps, VehData> &a, pair<Gps, VehData> &b) {
 	if (a.first.Latitude <= b.first.Latitude) {
 		if (a.first.Longitude < b.first.Longitude) {
 			return true;
@@ -96,7 +90,7 @@ bool compare(pair<Gps, VehData>& a, pair<Gps, VehData>& b) {
 	return false;
 }
 
-vector<pair<Gps, VehData>> GetSortedData(vector<pair<Gps, VehData>>& Data) {
+vector<pair<Gps, VehData>> GetSortedData(map<Gps, VehData> &Data) {
     vector<pair<Gps, VehData>> sortedData;
 
     // Copy key-value pair from Map
@@ -147,7 +141,7 @@ Result FindNearest(vector<pair<Gps, VehData>> &sortedData, const Gps &Compare) {
 	}
 	Result res;
 	res.PositionId = closestPosition.second.PositionId;
-	res.Latitude = 	closestPosition.first.Latitude;
+	res.Latitude = closestPosition.first.Latitude;
 	res.Longitude =	closestPosition.first.Longitude;
 	res.DistanceBetweenLatitude = sdx;
 	res.DistanceBetweenLongitude = sdy;

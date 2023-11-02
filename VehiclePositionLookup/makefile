@@ -10,8 +10,9 @@
 #     - Enable all general warnings
 #     - Enable conversion warnings
 
-  CC = gcc
+  CC = g++
   CFLAGS  = -g -Wall
+  CXXFLAGS = -std=c++17
  
   # The build target 
   TARGET = solution
@@ -19,7 +20,7 @@
   all: $(TARGET)
  
   $(TARGET): $(TARGET).cpp
-              $(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp
+              $(CC) $(CFLAGS) $(CXXFLAGS) -o $(TARGET) $(TARGET).cpp
  
   clean:
               $(RM) $(TARGET)
